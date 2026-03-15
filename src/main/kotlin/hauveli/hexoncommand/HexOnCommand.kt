@@ -78,7 +78,7 @@ class HexOnCommand : ModInitializer {
 					.executes({ context ->
 						val player = context.source.player
 						if (player != null &&
-							player.getAttributeValue(HexOnCommandAttributes.FREECASTER) > 0) {
+							player.getAttributeValue(HexOnCommandAttributes.COMMAND_PERMISSION) > 0) {
 							handleCastingGridPacket(player)
 						}
 						1

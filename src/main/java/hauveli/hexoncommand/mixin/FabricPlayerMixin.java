@@ -23,6 +23,6 @@ public abstract class FabricPlayerMixin extends LivingEntity {
     @Inject(at = @At("RETURN"), method = "createAttributes")
     private static void hex$addAttributes(CallbackInfoReturnable<AttributeSupplier.Builder> cir) {
         var out = cir.getReturnValue();
-        out.add(HexOnCommandAttributes.FREECASTER);
+        out.add(HexOnCommandAttributes.COMMAND_PERMISSION);
     }
 }

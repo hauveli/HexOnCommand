@@ -1,8 +1,8 @@
-Adds a single command intended for use in datapacks alongside the tag magical
+Adds a single command intended for use in datapacks alongside one attribute `hexoncommand:command_permission`
 
 Example usage:
 
-
-`/tag @p add magical`
-
-`/hexcastinggui`
+```
+/attribute @p hexoncommand:command_permission base set 1
+/hexcastinggui
+```

@@ -25,7 +25,7 @@ public abstract class MixinGuiSpellcasting {
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	private void injected(CallbackInfo ci) {
 		LocalPlayer player = Minecraft.getInstance().player;
-		if (player != null && player.getAttributeValue(HexOnCommandAttributes.FREECASTER) > 0) {
+		if (player != null && player.getAttributeValue(HexOnCommandAttributes.COMMAND_PERMISSION) > 0) {
 			ci.cancel();
 		}
 	}

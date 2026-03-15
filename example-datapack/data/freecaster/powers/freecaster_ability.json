@@ -1,0 +1,9 @@
+{
+    "name": "Staffless Casting",
+    "description": "Through the power you've inherited, you can conjure spells without channeling it through amethyst.",
+    "type": "apoli:active_self",
+    "entity_action": {
+        "type": "apoli:execute_command",
+        "command": "hexcastinggui"
+    }
+}

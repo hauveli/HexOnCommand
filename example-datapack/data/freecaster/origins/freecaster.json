@@ -1,0 +1,12 @@
+{
+    "name": "Freecaster",
+    "description": "Able to cast hexes without a staff.",
+    "powers": [
+        "freecaster:command_permission_attribute",
+        "freecaster:freecaster_ability"
+    ],
+    "icon": {
+        "item": "hexcasting:ancient_colorizer"
+    },
+    "impact": 3
+}

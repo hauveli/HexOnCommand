@@ -1,0 +1,9 @@
+{
+  "type": "origins:modify_attribute",
+  "attribute": "hexoncommand:command_permission",
+  "modifier": {
+    "operation": "set_total",
+    "value": 1
+  },
+  "hidden": "true"
+}
