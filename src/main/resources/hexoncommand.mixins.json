@@ -3,7 +3,7 @@
 	"package": "hauveli.hexoncommand.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"MixinEntityTagSync"
+		"FabricPlayerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

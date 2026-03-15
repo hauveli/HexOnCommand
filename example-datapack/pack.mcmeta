@@ -1,0 +1,12 @@
+{
+    "pack": {
+        "name": "Freecasting",
+        "id": "freecasting",
+        "pack_format": 15,
+        "version": "v1",
+        "authors": [
+            "Hauveli"
+        ],
+        "description": "This datapack adds the Freecasting origin to the game."
+    }
+}

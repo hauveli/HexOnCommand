@@ -1,7 +1,5 @@
 package hauveli.hexoncommand
 
-//hexcasting:
-// import net.minecraft.nbt.CompoundTag
 import at.petrak.hexcasting.common.lib.HexAttributes
 import at.petrak.hexcasting.common.lib.HexSounds
 import at.petrak.hexcasting.common.msgs.MsgClearSpiralPatternsS2C
@@ -9,38 +7,20 @@ import at.petrak.hexcasting.common.msgs.MsgOpenSpellGuiS2C
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
-import net.fabricmc.fabric.api.networking.v1.PacketSender
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.commands.Commands.literal
-// import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.server.network.ServerGamePacketListenerImpl
 import net.minecraft.world.InteractionHand
-
-
-// import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.Registry;
 
 
 class HexOnCommand : ModInitializer {
 
-	object HexOnCommandNetworking {
-		// JvmField because it needs a public getter. Do I want to do this some other way?
-		@JvmField
-		val SYNC_TAG_PACKET = ResourceLocation("hexoncommand", "sync_magical_tag")
-	}
-
 	// from: https://github.com/FallingColors/HexMod/blob/532fe9a60138544112e096812c7aefb78b3d7364/Common/src/main/java/at/petrak/hexcasting/common/items/ItemStaff.java#L28
 	fun handleCastingGridPacket(
-		server: MinecraftServer?,
 		player: ServerPlayer
 	) {
-		// Feeble Mind check
-		if (player.getAttributeValue(HexAttributes.FEEBLE_MIND) > 0.0 ||
-			!player.tags.contains("magical")) {
+		if (player.getAttributeValue(HexAttributes.FEEBLE_MIND) > 0.0) {
 			// InteractionResultHolder.fail(player.getItemInHand(hand))
 			// can't do this from outside of Item#use?
 			return
@@ -48,10 +28,11 @@ class HexOnCommand : ModInitializer {
 		val level = player.serverLevel()
 		val hand = InteractionHand.MAIN_HAND
 
+		// Is player crouching? if so reset casting grid
 		if (player.isShiftKeyDown) {
 			if (!level.isClientSide) {
 				player.playSound(HexSounds.STAFF_RESET, 1f, 1f)
-			} else if (player is ServerPlayer) { // I really don't get the point of this check
+			} else if (player is ServerPlayer) { // Is the point of this check when this runs on non-dedicated server?
 				IXplatAbstractions.INSTANCE.clearCastingData(player)
 				val packet = MsgClearSpiralPatternsS2C(player.uuid)
 				IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, packet)
@@ -85,27 +66,25 @@ class HexOnCommand : ModInitializer {
 
 	override fun onInitialize() {
 
-		// I don't know how to obtain a reference to MixinEntityTagSync.syncTag from this scope
-		ServerPlayConnectionEvents.JOIN.register(ServerPlayConnectionEvents.Join { handler: ServerGamePacketListenerImpl?, sender: PacketSender?, server: MinecraftServer? ->
-			val player = handler!!.getPlayer() // can this player be non-server?
-			val hasTag = player.tags.contains("magical")
-			val buf = PacketByteBufs.create() // This is just a boolean
-			buf.writeBoolean(hasTag)
-			ServerPlayNetworking.send(player, HexOnCommandNetworking.SYNC_TAG_PACKET, buf)
-		})
+		// Register attribute hexoncommand:freecaster
+		HexOnCommandAttributes.register { attribute, id ->
+			Registry.register(BuiltInRegistries.ATTRIBUTE, id, attribute)
+		}
 
+		// Register command hexcastinggui
 		CommandRegistrationCallback.EVENT.register({ dispatcher, registryAccess, environment ->
 			dispatcher.register(
 				literal("hexcastinggui")
 					.executes({ context ->
 						val player = context.source.player
-						if (player != null) {
-							// can server ever be null in this scenario, while player is not?
-							handleCastingGridPacket(context.source.server, player)
+						if (player != null &&
+							player.getAttributeValue(HexOnCommandAttributes.FREECASTER) > 0) {
+							handleCastingGridPacket(player)
 						}
 						1
 					})
 			)
 		})
 	}
+
 }
