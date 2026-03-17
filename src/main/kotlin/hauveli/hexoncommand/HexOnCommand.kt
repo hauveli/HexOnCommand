@@ -29,10 +29,9 @@ class HexOnCommand : ModInitializer {
 		val hand = InteractionHand.MAIN_HAND
 
 		// Is player crouching? if so reset casting grid, note that isShiftHeldDown doesn't work here...?
-		if (player.isCrouching) {
+		if (player.isShiftKeyDown) {
 			if (level.isClientSide) {
 				player.playSound(HexSounds.STAFF_RESET, 1f, 1f)
-				// if this *is* serverPlayer, why no earth am I not calling it in the next section?
 			}
 			if (player is ServerPlayer) { // Is the point of this check when this runs on non-dedicated server?
 				IXplatAbstractions.INSTANCE.clearCastingData(player)
