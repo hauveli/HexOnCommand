@@ -3,9 +3,9 @@
 	"id": "hexoncommand",
 	"version": "${version}",
 	"name": "hexoncommand",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "This mod registers a single command /hexcastinggui and one attribute hexoncommand:command_permission.",
 	"authors": [
-		"Me!"
+		"hauveli"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
